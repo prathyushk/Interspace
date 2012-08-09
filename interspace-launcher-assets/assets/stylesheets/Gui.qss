@@ -1,0 +1,27 @@
+QWidget#gui {
+    background-image: url(./assets/images/background.png);
+}
+
+QPushButton#leftArrowButton {
+    background-image: url(./assets/images/buttons/enabled/sidebar_left.png);
+    background-color: rgba(0, 0, 0, 0%);
+}
+
+QPushButton#leftArrowButton:hover {
+    background-image: url(./assets/images/buttons/hover/sidebar_left.png);
+    background-color: rgba(0, 0, 0, 0%);
+}
+
+QPushButton#rightArrowButton {
+    background-image: url(./assets/images/buttons/enabled/sidebar_right.png);
+    background-color: rgba(0, 0, 0, 0%);
+}
+
+QPushButton#rightArrowButton:hover {
+    background-image: url(./assets/images/buttons/hover/sidebar_right.png);
+    background-color: rgba(0, 0, 0, 0%);
+}
+
+QPushButton#controlButton {
+    background-image: url(./assets/images/buttons/enabled/play.png);
+}

@@ -1,0 +1,89 @@
+
+material phong1
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 1
+			diffuse 0.333333 0.333333 0.333333 1
+			specular 0.5 0.5 0.5 1 25.6
+		}
+
+	}
+
+}
+
+
+
+material lambert1
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 1
+			diffuse 0.5 0.5 0.5 1
+		}
+
+	}
+
+}
+
+
+
+material mi_metallic_paint1SG
+{
+	technique
+	{
+		pass
+		{
+		}
+
+	}
+
+}
+
+
+
+material mi_metallic_paint2SG
+{
+	technique
+	{
+		pass
+		{
+		}
+
+	}
+
+}
+
+
+
+material pasted__mi_metallic_paint1SG1
+{
+	technique
+	{
+		pass
+		{
+		}
+
+	}
+
+}
+
+
+
+material pasted__mi_metallic_paint2SG
+{
+	technique
+	{
+		pass
+		{
+		}
+
+	}
+
+}
+
+

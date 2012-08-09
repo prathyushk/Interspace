@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout >
+    <Window Type="DefaultWindow" Name="Root" >
+        <Property Name="UnifiedAreaRect" Value="{{0.000198345,0},{-0.000611993,0},{1.0002,0},{0.999389,0}}" />
+        <Window Type="TaharezLook/FrameWindow" Name="/ChatBox" >
+            <Property Name="TitlebarFont" Value="DejaVuSans-10" />
+            <Property Name="TitlebarEnabled" Value="True" />
+            <Property Name="UnifiedAreaRect" Value="{{0.01,0},{0.658333,0},{0.36375,0},{0.985,0}}" />
+            <AutoWindow NameSuffix="__auto_titlebar__" >
+                <Property Name="Font" Value="DejaVuSans-10" />
+            </AutoWindow>
+            <AutoWindow NameSuffix="__auto_closebutton__" />
+            <Window Type="TaharezLook/Listbox" Name="/ChatBox/ChatHistory" >
+                <Property Name="UnifiedAreaRect" Value="{{0.0325087,0},{0.053061,0},{0.968021,0},{0.838775,0}}" />
+                <AutoWindow NameSuffix="__auto_hscrollbar__" >
+                    <AutoWindow NameSuffix="__auto_incbtn__" />
+                    <AutoWindow NameSuffix="__auto_decbtn__" />
+                    <AutoWindow NameSuffix="__auto_thumb__" />
+                </AutoWindow>
+                <AutoWindow NameSuffix="__auto_vscrollbar__" >
+                    <AutoWindow NameSuffix="__auto_incbtn__" />
+                    <AutoWindow NameSuffix="__auto_decbtn__" />
+                    <AutoWindow NameSuffix="__auto_thumb__" />
+                </AutoWindow>
+            </Window>
+            <Window Type="TaharezLook/Editbox" Name="/ChatBox/ChatText" >
+                <Property Name="MaxTextLength" Value="1073741823" />
+                <Property Name="UnifiedAreaRect" Value="{{0.0300351,0},{0.862245,0},{0.969081,0},{0.969388,0}}" />
+                <Property Name="TextParsingEnabled" Value="False" />
+            </Window>
+        </Window>
+        <Window Type="TaharezLook/GroupBox" Name="/HUDStats" >
+            <Property Name="RiseOnClick" Value="False" />
+            <Property Name="UnifiedAreaRect" Value="{{0.786754,0},{-0.00483115,0},{0.996567,0},{0.39072,0}}" />
+            <AutoWindow NameSuffix="__auto_contentpane__" >
+                <Window Type="TaharezLook/ProgressBar" Name="/HUDStats/Healthbar" >
+                    <Property Name="Font" Value="DejaVuSans-10" />
+                    <Property Name="StepSize" Value="0.01" />
+                    <Property Name="CurrentProgress" Value="0" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.0308768,0},{0.137264,0},{0.972499,0},{0.232204,0}}" />
+                </Window>
+                <Window Type="TaharezLook/StaticText" Name="/HUDStats/Health" >
+                    <Property Name="Font" Value="DejaVuSans-10" />
+                    <Property Name="Text" Value="Health:" />
+                    <Property Name="HorzExtent" Value="118" />
+                    <Property Name="VertExtent" Value="24.0634" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.0283507,0},{0.0179677,0},{0.972088,0},{0.123371,0}}" />
+                    <AutoWindow NameSuffix="__auto_hscrollbar__" >
+                        <AutoWindow NameSuffix="__auto_incbtn__" />
+                        <AutoWindow NameSuffix="__auto_decbtn__" />
+                        <AutoWindow NameSuffix="__auto_thumb__" />
+                    </AutoWindow>
+                    <AutoWindow NameSuffix="__auto_vscrollbar__" >
+                        <AutoWindow NameSuffix="__auto_incbtn__" />
+                        <AutoWindow NameSuffix="__auto_decbtn__" />
+                        <AutoWindow NameSuffix="__auto_thumb__" />
+                    </AutoWindow>
+                </Window>
+                <Window Type="TaharezLook/StaticText" Name="/HUDStats/Playername" >
+                    <Property Name="Font" Value="DejaVuSans-10" />
+                    <Property Name="Text" Value="Name:" />
+                    <Property Name="HorzExtent" Value="105" />
+                    <Property Name="VertExtent" Value="24.0634" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.0286013,0},{0.24724,0},{0.967538,0},{0.353348,0}}" />
+                    <AutoWindow NameSuffix="__auto_hscrollbar__" >
+                        <AutoWindow NameSuffix="__auto_incbtn__" />
+                        <AutoWindow NameSuffix="__auto_decbtn__" />
+                        <AutoWindow NameSuffix="__auto_thumb__" />
+                    </AutoWindow>
+                    <AutoWindow NameSuffix="__auto_vscrollbar__" >
+                        <AutoWindow NameSuffix="__auto_incbtn__" />
+                        <AutoWindow NameSuffix="__auto_decbtn__" />
+                        <AutoWindow NameSuffix="__auto_thumb__" />
+                    </AutoWindow>
+                </Window>
+                <Window Type="TaharezLook/StaticText" Name="/HUDStats/Level" >
+                    <Property Name="Text" Value="Level:" />
+                    <Property Name="HorzExtent" Value="97" />
+                    <Property Name="VertExtent" Value="24.0634" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.0284969,0},{0.366787,0},{0.967432,0},{0.472895,0}}" />
+                    <AutoWindow NameSuffix="__auto_hscrollbar__" >
+                        <AutoWindow NameSuffix="__auto_incbtn__" />
+                        <AutoWindow NameSuffix="__auto_decbtn__" />
+                        <AutoWindow NameSuffix="__auto_thumb__" />
+                    </AutoWindow>
+                    <AutoWindow NameSuffix="__auto_vscrollbar__" >
+                        <AutoWindow NameSuffix="__auto_incbtn__" />
+                        <AutoWindow NameSuffix="__auto_decbtn__" />
+                        <AutoWindow NameSuffix="__auto_thumb__" />
+                    </AutoWindow>
+                </Window>
+                <Window Type="TaharezLook/ProgressBar" Name="/HUDStats/Experiencebar" >
+                    <Property Name="StepSize" Value="0.01" />
+                    <Property Name="CurrentProgress" Value="0" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.0307725,0},{0.611744,0},{0.969906,0},{0.706685,0}}" />
+                </Window>
+                <Window Type="TaharezLook/StaticText" Name="/HUDStats/Experience" >
+                    <Property Name="Text" Value="Experience:" />
+                    <Property Name="HorzExtent" Value="192" />
+                    <Property Name="VertExtent" Value="24.0634" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.0304802,0},{0.491131,0},{0.969415,0},{0.597239,0}}" />
+                    <AutoWindow NameSuffix="__auto_hscrollbar__" >
+                        <AutoWindow NameSuffix="__auto_incbtn__" />
+                        <AutoWindow NameSuffix="__auto_decbtn__" />
+                        <AutoWindow NameSuffix="__auto_thumb__" />
+                    </AutoWindow>
+                    <AutoWindow NameSuffix="__auto_vscrollbar__" >
+                        <AutoWindow NameSuffix="__auto_incbtn__" />
+                        <AutoWindow NameSuffix="__auto_decbtn__" />
+                        <AutoWindow NameSuffix="__auto_thumb__" />
+                    </AutoWindow>
+                </Window>
+                <Window Type="TaharezLook/StaticText" Name="/HUDStats/Class" >
+                    <Property Name="Text" Value="Class:" />
+                    <Property Name="HorzExtent" Value="96" />
+                    <Property Name="VertExtent" Value="24.0634" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.0303758,0},{0.725792,0},{0.969311,0},{0.8319,0}}" />
+                    <AutoWindow NameSuffix="__auto_hscrollbar__" >
+                        <AutoWindow NameSuffix="__auto_incbtn__" />
+                        <AutoWindow NameSuffix="__auto_decbtn__" />
+                        <AutoWindow NameSuffix="__auto_thumb__" />
+                    </AutoWindow>
+                    <AutoWindow NameSuffix="__auto_vscrollbar__" >
+                        <AutoWindow NameSuffix="__auto_incbtn__" />
+                        <AutoWindow NameSuffix="__auto_decbtn__" />
+                        <AutoWindow NameSuffix="__auto_thumb__" />
+                    </AutoWindow>
+                </Window>
+                <Window Type="TaharezLook/StaticText" Name="/HUDStats/Equipped" >
+                    <Property Name="Text" Value="Equipped:" />
+                    <Property Name="HorzExtent" Value="165" />
+                    <Property Name="VertExtent" Value="24.0634" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.0302714,0},{0.854932,0},{0.969205,0},{0.96104,0}}" />
+                    <AutoWindow NameSuffix="__auto_hscrollbar__" >
+                        <AutoWindow NameSuffix="__auto_incbtn__" />
+                        <AutoWindow NameSuffix="__auto_decbtn__" />
+                        <AutoWindow NameSuffix="__auto_thumb__" />
+                    </AutoWindow>
+                    <AutoWindow NameSuffix="__auto_vscrollbar__" >
+                        <AutoWindow NameSuffix="__auto_incbtn__" />
+                        <AutoWindow NameSuffix="__auto_decbtn__" />
+                        <AutoWindow NameSuffix="__auto_thumb__" />
+                    </AutoWindow>
+                </Window>
+            </AutoWindow>
+        </Window>
+        <Window Type="TaharezLook/GroupBox" Name="/HUDStats2" >
+            <Property Name="Font" Value="DejaVuSans-10" />
+            <Property Name="RiseOnClick" Value="False" />
+            <Property Name="UnifiedAreaRect" Value="{{0.758049,0},{0.856421,0},{0.997089,0},{0.994935,0}}" />
+            <AutoWindow NameSuffix="__auto_contentpane__" >
+                <Window Type="TaharezLook/StaticText" Name="/HUDStats/AmmunitionTitle" >
+                    <Property Name="Text" Value="Battery:" />
+                    <Property Name="HorzExtent" Value="131" />
+                    <Property Name="VertExtent" Value="24.0634" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.0322366,0},{0.0614689,0},{0.971171,0},{0.463224,0}}" />
+                    <AutoWindow NameSuffix="__auto_hscrollbar__" >
+                        <AutoWindow NameSuffix="__auto_incbtn__" />
+                        <AutoWindow NameSuffix="__auto_decbtn__" />
+                        <AutoWindow NameSuffix="__auto_thumb__" />
+                    </AutoWindow>
+                    <AutoWindow NameSuffix="__auto_vscrollbar__" >
+                        <AutoWindow NameSuffix="__auto_incbtn__" />
+                        <AutoWindow NameSuffix="__auto_decbtn__" />
+                        <AutoWindow NameSuffix="__auto_thumb__" />
+                    </AutoWindow>
+                </Window>
+                <Window Type="TaharezLook/ProgressBar" Name="/HUDStats2/Battery" >
+                    <Property Name="Font" Value="DejaVuSans-10" />
+                    <Property Name="StepSize" Value="0.01" />
+                    <Property Name="CurrentProgress" Value="0" />
+                    <Property Name="UnifiedAreaRect" Value="{{0.0360635,0},{0.509597,0},{0.972298,0},{0.914855,0}}" />
+                </Window>
+            </AutoWindow>
+        </Window>
+        <Window Type="TaharezLook/StaticText" Name="/Crosshairs" >
+            <Property Name="Font" Value="DejaVuSans-10" />
+            <Property Name="Text" Value="+" />
+            <Property Name="HorzExtent" Value="26" />
+            <Property Name="VertExtent" Value="24.0634" />
+            <Property Name="FrameEnabled" Value="False" />
+            <Property Name="HorzFormatting" Value="HorzCentred" />
+            <Property Name="UnifiedAreaRect" Value="{{0.48,0},{0.48,0},{0.52,0},{0.52,0}}" />
+            <Property Name="BackgroundEnabled" Value="False" />
+            <AutoWindow NameSuffix="__auto_hscrollbar__" >
+                <AutoWindow NameSuffix="__auto_incbtn__" />
+                <AutoWindow NameSuffix="__auto_decbtn__" />
+                <AutoWindow NameSuffix="__auto_thumb__" />
+            </AutoWindow>
+            <AutoWindow NameSuffix="__auto_vscrollbar__" >
+                <AutoWindow NameSuffix="__auto_incbtn__" />
+                <AutoWindow NameSuffix="__auto_decbtn__" />
+                <AutoWindow NameSuffix="__auto_thumb__" />
+            </AutoWindow>
+        </Window>
+        <Window Type="TaharezLook/FrameWindow" Name="/ClassSelection" >
+            <Property Name="Font" Value="DejaVuSans-10" />
+            <Property Name="Text" Value="Select your class" />
+            <Property Name="Visible" Value="False" />
+            <Property Name="TitlebarFont" Value="DejaVuSans-10" />
+            <Property Name="TitlebarEnabled" Value="True" />
+            <Property Name="UnifiedAreaRect" Value="{{0.246267,0},{0.0741937,0},{0.693954,0},{0.637097,0}}" />
+            <AutoWindow NameSuffix="__auto_titlebar__" >
+                <Property Name="Font" Value="DejaVuSans-10" />
+                <Property Name="Text" Value="Select your class" />
+            </AutoWindow>
+            <AutoWindow NameSuffix="__auto_closebutton__" />
+            <Window Type="TaharezLook/Button" Name="/ClassSelection/Acrobat" >
+                <Property Name="Font" Value="DejaVuSans-10" />
+                <Property Name="Text" Value="Acrobat" />
+                <Property Name="UnifiedAreaRect" Value="{{0.067646,0},{0.344604,0},{0.317646,0},{0.594603,0}}" />
+            </Window>
+            <Window Type="TaharezLook/Button" Name="/ClassSelection/Juggernaut" >
+                <Property Name="Font" Value="DejaVuSans-10" />
+                <Property Name="Text" Value="Juggernaut" />
+                <Property Name="UnifiedAreaRect" Value="{{0.366119,0},{0.339542,0},{0.616119,0},{0.589542,0}}" />
+            </Window>
+            <Window Type="TaharezLook/Button" Name="/ClassSelection/Sniper" >
+                <Property Name="Font" Value="DejaVuSans-10" />
+                <Property Name="Text" Value="Sniper" />
+                <Property Name="UnifiedAreaRect" Value="{{0.665061,0},{0.341356,0},{0.915061,0},{0.591356,0}}" />
+            </Window>
+        </Window>
+    </Window>
+</GUILayout>
