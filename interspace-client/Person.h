@@ -12,16 +12,20 @@
 class Person
 {
 public:
-	Person(Ogre::Entity* entity, Ogre::SceneNode* node, std::string name, Ogre::Vector3 position, btConvexShape* shape, PhysicsManager* physics,float stepHeight);
-	Person(Ogre::Camera* ent, Ogre::SceneNode* model, Ogre::Vector3 spawn, btConvexShape* shape, PhysicsManager* phys);
+	Person(Ogre::Entity* entity, Ogre::SceneNode* node, std::string name, Ogre::Vector3 position, btConvexShape* shape, float stepHeight);
+	Person(Ogre::Camera* ent, Ogre::SceneNode* model, std::string name, Ogre::Vector3 spawn, btConvexShape* shape);
 	virtual ~Person(void);
 	btKinematicCharacterController* getControl(void);
 	Ogre::SceneNode* getNode(void);
 	void setOrientation(Ogre::Quaternion);
 	void setPosition(Ogre::Vector3);
 	void setDirection(Ogre::Vector3);
+	Ogre::Vector3 getPosition();
+	void changeName(std::string newName);
+	std::string getName();
 	Ogre::MovableText* getLabel(void);
 protected:
+	std::string myName;
 	btKinematicCharacterController* control;
 	Ogre::MovableText* label;
 };

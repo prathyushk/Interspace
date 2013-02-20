@@ -3,20 +3,24 @@
 #include <Ogre.h>
 #include <BitStream.h>
 #include "Person.h"
-#include "Game.h"
+#include "Interspace.h"
 #include <btBulletDynamicsCommon.h>
 #include "PhysicsManager.h"
 #include "Euler.h"
+#include "GuiManager.h"
+#include "Hud.h"
 
 #define SERVER_PORT 6262
 
-Client::Client(Game* setGame) : game(setGame), connected(false)
+template<> Client* Ogre::Singleton<Client>::msSingleton = 0;
+
+Client::Client() : game(Interspace::getSingletonPtr()), connected(false)
 {
 	peer = RakNet::RakPeerInterface::GetInstance();
 	RakNet::SocketDescriptor sd;
 	peer->Startup(1,&sd, 1);
 	peer->SetMaximumIncomingConnections(100);
-	peer->Connect("198.245.62.64",SERVER_PORT,0,0); 
+	peer->Connect("198.23.226.17",SERVER_PORT,0,0); 
 }
 
 Client::~Client()
@@ -33,6 +37,12 @@ void Client::update()
 	{
 		switch(packet->data[0])
 		{
+		case PLAYER_DAMAGE_MESSAGE:
+			playerDamageRecieved(packet);
+			break;
+		case CHAT_MESSAGE:
+			chatMessageRecieved(packet);
+			break;
 		case ENEMY_MOVE_MESSAGE:
 			enemyMoveMessageReceived(packet);
 			break;
@@ -61,6 +71,52 @@ bool Client::isConnected()
 {
 	return connected;
 }
+
+void Client::chatMessageRecieved(RakNet::Packet* packet)
+{
+	if(connected)
+	{
+		RakNet::RakString rs;
+		RakNet::BitStream bsIn(packet->data,packet->length,false);
+		bsIn.IgnoreBytes(sizeof(RakNet::MessageID));
+		bsIn.Read(rs);
+		if(game->getGuiManager()->getGui()->getName().compare("Hud") == 0)
+		{
+			Hud* hud = static_cast<Hud*>(game->getGuiManager()->getGui());
+			hud->addToChat(rs.C_String());
+		}
+	}
+}
+
+void Client::playerDamageRecieved(RakNet::Packet* packet)
+{
+	if(connected)
+	{
+		RakNet::BitStream bsIn(packet->data,packet->length,false);
+		bsIn.IgnoreBytes(sizeof(RakNet::MessageID));
+		int index;
+		int damage;
+		bsIn.Read(index);
+		bsIn.Read(damage);
+		if(index == game->getIndex())
+		{
+			game->getPlayer()->takeDamage(damage);
+			game->getAudioManager()->playGunshot();
+		}
+	}
+}
+
+void Client::sendMessage(std::string str)
+{
+	if(connected)
+	{
+		RakNet::BitStream bsOut;
+		bsOut.Write((RakNet::MessageID)CHAT_MESSAGE);
+		bsOut.Write(str.c_str());
+		peer->Send(&bsOut,HIGH_PRIORITY,RELIABLE_ORDERED,0,serverAddress,false);
+	}
+}
+
 
 void Client::sendDamage(int index, int damage)
 {
@@ -105,7 +161,9 @@ void Client::playerMoveMessageReceived(RakNet::Packet* packet)
 		bsIn.IgnoreBytes(sizeof(RakNet::MessageID));
 		int index;
 		int posx, posy, posz, dirx, diry, dirz;
+		RakNet::RakString rs;
 		bsIn.Read(index);
+		bsIn.Read(rs);
 		bsIn.Read(posx);
 		bsIn.Read(posy);
 		bsIn.Read(posz);
@@ -113,6 +171,8 @@ void Client::playerMoveMessageReceived(RakNet::Packet* packet)
 		bsIn.Read(diry);
 		bsIn.Read(dirz);
 		game->getPlayers()->at(index)->setPosition(Ogre::Vector3(posx,posy,posz));
+		if(index != game->getIndex())
+			game->getPlayers()->at(index)->changeName(rs.C_String());
 		Ogre::Euler euler;
 		euler.setYaw(Ogre::Degree(dirx)).setPitch(Ogre::Degree(diry)).setRoll(Ogre::Degree(dirz));
 		game->getPlayers()->at(index)->getNode()->setOrientation(euler);
@@ -129,7 +189,7 @@ void Client::playerJoined(RakNet::Packet* packet)
 	if(game->getIndex() == -1){
 		game->setIndex(index);
 		for(int i = 0; i < game->getIndex() + 1; i++){
-			Player* person = new Player(game->getSceneManager()->createEntity("Oto.mesh"), game->getSceneManager()->getRootSceneNode()->createChildSceneNode(), "Player", Ogre::Vector3(0,10,80), new btCapsuleShape(5,25), game->getPhysicsManager(), 4);
+			Player* person = new Player(game->getSceneManager()->createEntity("Oto.mesh"), game->getSceneManager()->getRootSceneNode()->createChildSceneNode(), "Player", Ogre::Vector3(0,10,80), new btCapsuleShape(5,25), 4);
 			game->getPlayers()->push_back(person);
 			if(i == game->getIndex()){
 				int h = game->getPlayers()->size();
@@ -141,7 +201,7 @@ void Client::playerJoined(RakNet::Packet* packet)
 	}
 	else
 		game->getPlayers()->push_back(new Player(game->getSceneManager()->createEntity("Oto.mesh"),
-		game->getSceneManager()->getRootSceneNode()->createChildSceneNode(), "Player", Ogre::Vector3(0,10,80), new btCapsuleShape(5,25), game->getPhysicsManager(),4));
+		game->getSceneManager()->getRootSceneNode()->createChildSceneNode(), "Player", Ogre::Vector3(0,10,80), new btCapsuleShape(5,25),4));
 }
 
 void Client::playerLeft(RakNet::Packet* packet)
@@ -164,6 +224,7 @@ void Client::sendPosition(const Ogre::Vector3 vec, const Ogre::Vector3 dir)
 	RakNet::BitStream bsOut;
 	bsOut.Write((RakNet::MessageID)PLAYER_MOVE_MESSAGE);
 	bsOut.Write(game->getIndex());
+	bsOut.Write(game->getPlayer()->getName().c_str());
 	bsOut.Write((int)vec.x);
 	bsOut.Write((int)vec.y);
 	bsOut.Write((int)vec.z);

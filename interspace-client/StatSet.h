@@ -11,6 +11,12 @@ public:
 	StatSet(void);
 	StatSet(std::string className);
 	~StatSet(void);
+	float getMaxHealth();
+	float getAccuracy();
+	float getJump();
+	float getSpeed();
+	float getDefense();
+	float getGunProficiency();
 private:
 	void loadStats(void);
 	void loadJuggernaut(void);

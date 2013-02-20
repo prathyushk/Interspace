@@ -2,8 +2,7 @@
 #include "config.h"
 #endif
 
-#include <cstdlib>
-#include "Game.h"
+#include "Interspace.h"
 #include <iostream>
 #include <OgreException.h>
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
@@ -27,13 +26,13 @@ extern "C" {
       CmdLineInterface *cmdLine = new CmdLineInterface(argc, argv);
       CmdLineConfig config = cmdLine->getConfig();
       delete cmdLine;
-      Game app(config);
+      Interspace app(config);
 #else
-      Game app;
+      Interspace interspace;
 #endif
  
         try {
-            app.start();
+            interspace.start();
         } catch( Ogre::Exception& e ) {
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
             MessageBox( NULL, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
@@ -43,7 +42,6 @@ extern "C" {
 #endif
         }
  
-	exit(0);
         return 0;
     }
  

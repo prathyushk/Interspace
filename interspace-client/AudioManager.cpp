@@ -2,11 +2,8 @@
 #include <OgreOggSound.h>
 
 AudioManager::AudioManager()
-	: gunShots(0)
-{
-	mSoundMgr = OgreOggSound::OgreOggSoundManager::getSingletonPtr();
-	mSoundMgr->init();
-	
+	: mSoundMgr(OgreOggSound::OgreOggSoundManager::getSingletonPtr()), gunShots(0)
+{	
 }
 
 void AudioManager::playMain()
@@ -24,9 +21,4 @@ void AudioManager::playGunshot()
 	gunShot->setVolume(0.3);
 	gunShots++;
 	gunShot->play(true);
-}
-
-void AudioManager::update(double dt)
-{
-	mSoundMgr->update(dt);
 }

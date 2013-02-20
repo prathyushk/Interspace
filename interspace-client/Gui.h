@@ -1,28 +1,27 @@
 #ifndef __Gui_h_
 #define __Gui_h_
 
-class Game;
 #include <CEGUI.h>
-#include "MainMenu.h"
-#include "Hud.h"
+#include "Interspace.h"
+#include <string>
 
 class Gui
 {
 public:
-	Gui(Game*);
-	~Gui(void);
-	bool openMenu(void);
-	bool openHud(void);
-	bool isVisible(void);
-	bool isHud(void);
-	bool isMenu(void);
-	Hud* getHud(void);
-	MainMenu* getMenu(void);
-private:
-	Game* game;
-	Hud* hud;
-	MainMenu* mainMenu;
-	CEGUI::Window* sheet;
+	Gui(std::string inputName);
+	virtual ~Gui();
+	virtual void show() = 0;
+	virtual void hide() = 0;
+	virtual void load(CEGUI::Window* window) = 0;
+	CEGUI::Window* getLayout();
+	std::string getName();
+protected:
+	Interspace* engine;
+	std::string name;
+	CEGUI::WindowManager* mWinMgr;
+	CEGUI::System* mSystem;
+	CEGUI::Window* mWindow;
+	CEGUI::Window* guiLayout;
 };
 
 #endif

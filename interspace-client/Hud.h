@@ -1,22 +1,29 @@
 #ifndef __Hud_h_
 #define __Hud_h_
-#include <CEGUI.h>
 
-class Hud
+class Client;
+class Interspace;
+#include <CEGUI.h>
+#include <string>
+#include "Gui.h"
+#include "Player.h"
+
+class Hud : public Gui
 {
 public:
-	Hud(CEGUI::WindowManager* winMgr, CEGUI::System* system, CEGUI::Window* window);
-	~Hud(void);
-	void hide(void);
-	void show(void);
-	bool isVisible(void);
-	CEGUI::Window* getGuiLayout(void);
+	Hud();
+	~Hud();
+	void hide();
+	void show();
+	void load(CEGUI::Window* window);
+	void openChatBox();
+	void closeChatBox();
+	bool isChatBoxOpen();
+	void addToChat(std::string str);
+	void update(Player* player);
 private:
-	bool visible;
-	CEGUI::WindowManager* mWinMgr;
-	CEGUI::System* mSystem;
-	CEGUI::Window* mWindow;
-	CEGUI::Window* guiLayout2;
+	int numThreads;
+	int chatBoxAppear();
 	bool chatBoxClosed(const CEGUI::EventArgs&);
 	bool sendChat(const CEGUI::EventArgs&);
 	bool acrobatSelected(const CEGUI::EventArgs&);

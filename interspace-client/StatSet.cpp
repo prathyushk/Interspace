@@ -2,23 +2,60 @@
 #include <string>
 #include <vector>
 #include "Stats.h"
+#include "Classes.h"
 
 StatSet::StatSet()
 {
 	stats = new std::vector<Stat*>();
+	loadStats();
 }
 
 StatSet::StatSet(std::string className)
 {
 	stats = new std::vector<Stat*>();
-	if(className.compare("Juggernaut") == 0)
+	if(className.compare(Classes::JUGGERNAUT) == 0)
 		loadJuggernaut();
-	else if(className.compare("Acrobat") == 0)
+	else if(className.compare(Classes::ACROBAT) == 0)
 		loadAcrobat();
-	else if(className.compare("Sniper") == 0)
+	else if(className.compare(Classes::SNIPER) == 0)
 		loadSniper();
 	else
 		loadStats();
+}
+
+StatSet::~StatSet()
+{
+	delete stats;
+}
+
+float StatSet::getMaxHealth()
+{
+	return stats->at(5)->getVal();
+}
+
+float StatSet::getAccuracy()
+{
+	return stats->at(0)->getVal();
+}
+
+float StatSet::getDefense()
+{
+	return stats->at(1)->getVal();
+}
+
+float StatSet::getGunProficiency()
+{
+	return stats->at(2)->getVal();
+}
+
+float StatSet::getJump()
+{
+	return stats->at(3)->getVal();
+}
+
+float StatSet::getSpeed()
+{
+	return stats->at(4)->getVal();
 }
 
 void StatSet::loadStats()

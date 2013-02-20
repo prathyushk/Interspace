@@ -1,3 +1,4 @@
+#include <Ogre.h>
 #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
 
 #ifndef __CmdLineConfig_h_

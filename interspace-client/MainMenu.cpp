@@ -1,14 +1,36 @@
 #include "MainMenu.h"
 #include <CEGUI.h>
-#include "Game.h"
+#include "Interspace.h"
 #include <Ogre.h>
 #include <CEGUIString.h>
 
-MainMenu::MainMenu(CEGUI::WindowManager* winMgr, CEGUI::System* sys, CEGUI::Window* win, Game* app)
-	: mWinMgr(winMgr), mSystem(sys), mWindow(win), visible(true), mApp(app)
+MainMenu::MainMenu()
+	:Gui("MainMenu")
 {
+}
+
+MainMenu::~MainMenu()
+{
+}
+
+void MainMenu::hide()
+{
+}
+
+void MainMenu::show()
+{
+}
+
+void MainMenu::load(CEGUI::Window* window)
+{
+	mWinMgr = CEGUI::WindowManager::getSingletonPtr();
+	mSystem = CEGUI::System::getSingletonPtr();
+	mWindow = window;
+	engine = Interspace::getSingletonPtr();
 	guiLayout = mWinMgr->loadWindowLayout("MainMenu.layout");
 	mWindow->addChildWindow(guiLayout);
+	CEGUI::Editbox* box = static_cast<CEGUI::Editbox*>(mWinMgr->getWindow("/Login/Password"));
+	box->setTextMasked(true);
 	mWinMgr->getWindow("/Start")->subscribeEvent(CEGUI::PushButton::EventMouseButtonUp, CEGUI::Event::Subscriber(&MainMenu::startButtonClicked, this));
 	mWinMgr->getWindow("/Options")->subscribeEvent(CEGUI::PushButton::EventMouseButtonUp, CEGUI::Event::Subscriber(&MainMenu::optionsButtonClicked, this));
 	mWinMgr->getWindow("/Credits")->subscribeEvent(CEGUI::PushButton::EventMouseButtonUp, CEGUI::Event::Subscriber(&MainMenu::creditsButtonClicked, this));
@@ -19,15 +41,9 @@ MainMenu::MainMenu(CEGUI::WindowManager* winMgr, CEGUI::System* sys, CEGUI::Wind
 	mWinMgr->getWindow("/Login")->subscribeEvent(CEGUI::FrameWindow::EventCloseClicked, CEGUI::Event::Subscriber(&MainMenu::closeLogin, this));
 }
 
-MainMenu::~MainMenu()
+std::string MainMenu::getUsername()
 {
-	mWindow->removeChildWindow(guiLayout);
-	delete guiLayout;
-}
-
-bool MainMenu::isVisible()
-{
-	return visible;
+	return mWinMgr->getWindow("/Login/Username")->getText().c_str();
 }
 
 bool MainMenu::startButtonClicked(const CEGUI::EventArgs& args)
@@ -58,13 +74,13 @@ bool MainMenu::goButtonClicked(const CEGUI::EventArgs& args)
 
 bool MainMenu::yesTutorial(const CEGUI::EventArgs& args)
 {
-	mApp->go();
+	engine->exitMenu();
 	return true;
 }
 
 bool MainMenu::noTutorial(const CEGUI::EventArgs& args)
 {
-	mApp->go();
+	engine->exitMenu();
 	return true;
 }
 
@@ -78,14 +94,4 @@ bool MainMenu::closeLogin(const CEGUI::EventArgs& args)
 {
 	mWinMgr->getWindow("/Login")->setVisible(false);
 	return true;
-}
-
-CEGUI::Window* MainMenu::getGuiLayout()
-{
-	return guiLayout;
-}
-
-void MainMenu::setVisible(bool value)
-{
-	visible = value;
 }

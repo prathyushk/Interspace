@@ -7,6 +7,8 @@
 #include <BulletDynamics/Character/btKinematicCharacterController.h>
 #include <vector>
 
+template<> PhysicsManager* Ogre::Singleton<PhysicsManager>::msSingleton = 0;
+
 PhysicsManager::PhysicsManager(void)
 {
 	broadPhase = new btDbvtBroadphase();
@@ -80,7 +82,7 @@ void PhysicsManager::update(double step)
 btRigidBody* PhysicsManager::addRigidBody(btTransform& trans,btCollisionShape* shape, float mass,Ogre::SceneNode* node)
 {
 	btVector3 inertia;
-	shape->calculateLocalInertia(mass, inertia);
+	//shape->calculateLocalInertia(mass, inertia);
 	OgreMotionState * motionState = new OgreMotionState(trans, node);
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, shape, inertia);
 	btRigidBody * body = new btRigidBody(rbInfo);
@@ -88,24 +90,24 @@ btRigidBody* PhysicsManager::addRigidBody(btTransform& trans,btCollisionShape* s
 	return body;
 }
 
-btVector3 PhysicsManager::vec3OgreToBullet(const Ogre::Vector3& vec)
+btVector3 PhysicsManager::convert(const Ogre::Vector3& vec)
 {
-	return btVector3(vec.x, vec.y, vec.z);
+	return btVector3(vec.x,vec.y,vec.z);
 }
 
-btQuaternion PhysicsManager::quatOgreToBullet(const Ogre::Quaternion& quat)
+btQuaternion PhysicsManager::convert(const Ogre::Quaternion& quat)
 {
-	return btQuaternion(quat.w, quat.x, quat.y, quat.z);
+	return btQuaternion(quat.w,quat.x,quat.y,quat.z);
 }
 
-Ogre::Vector3 PhysicsManager::vec3BulletToOgre(const btVector3& vec)
+Ogre::Vector3 PhysicsManager::convert(const btVector3& vec)
 {
 	return Ogre::Vector3(vec.x(),vec.y(),vec.z());
 }
 
-Ogre::Quaternion PhysicsManager::quatBulletToOgre(const btQuaternion& quat)
+Ogre::Quaternion PhysicsManager::convert(const btQuaternion& quat)
 {
-	return Ogre::Quaternion(quat.w(), quat.x(), quat.y(), quat.z());
+	return Ogre::Quaternion(quat.w(), quat.x(),quat.y(),quat.z());
 }
 
 btDynamicsWorld* PhysicsManager::getWorld()

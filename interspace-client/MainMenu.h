@@ -1,26 +1,21 @@
 #ifndef __MainMenu_h_
 #define __MainMenu_h_
 
-class Game;
+class Interspace;
 #include <CEGUI.h>
+#include "Gui.h"
+#include <string>
 
-class MainMenu
+class MainMenu : public Gui
 {
 public:
-	MainMenu(CEGUI::WindowManager*, CEGUI::System*, CEGUI::Window*, Game*);
-	~MainMenu(void);
-	void hide(void);
-	void show(void);
-	bool isVisible(void);
-	void setVisible(bool);
-	CEGUI::Window* getGuiLayout(void);
+	MainMenu();
+	~MainMenu();
+	void hide();
+	void show();
+	void load(CEGUI::Window* window);
+	std::string getUsername();
 private:
-	Game* mApp;
-	bool visible;
-	CEGUI::WindowManager* mWinMgr;
-	CEGUI::System* mSystem;
-	CEGUI::Window* mWindow;
-	CEGUI::Window* guiLayout;
 	bool startButtonClicked(const CEGUI::EventArgs&);
 	bool optionsButtonClicked(const CEGUI::EventArgs&);
 	bool creditsButtonClicked(const CEGUI::EventArgs&);
