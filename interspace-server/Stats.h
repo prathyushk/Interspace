@@ -1,7 +1,0 @@
-#include "Stat.h"
-#include "Accuracy.h"
-#include "Defense.h"
-#include "GunProficiency.h"
-#include "Health.h"
-#include "Jump.h"
-#include "Speed.h"

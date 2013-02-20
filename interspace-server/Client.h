@@ -1,38 +1,25 @@
-#ifndef __Client_h__
-#define __Client_h__
+#ifndef __Client_h_
+#define __Client_h_
 
-class Game;
+#include <boost/thread.hpp>
 #include <RakPeerInterface.h>
-#include <MessageIdentifiers.h>
-#include "Ogre.h"
+#include <btBulletDynamicsCommon.h>
 
 class Client
 {
 public:
-	Client(Game*);
+	Client(RakNet::RakNetGUID&, int index);
 	~Client(void);
-	void update(void);
-	void sendDamage(int index, int damage);
-	void sendPosition(const Ogre::Vector3 position, const Ogre::Vector3 direction);
-	bool isConnected(void);
+	void setPos(const btVector3&);
+	btVector3& getPos(void);
+	RakNet::RakNetGUID& getGuid(void);
+	int getIndex(void);
+	void setIndex(int set);
 private:
-	enum GameMessages
-	{
-		PLAYER_JOINED_MESSAGE=ID_USER_PACKET_ENUM+1,
-		PLAYER_LEFT_MESSAGE=ID_USER_PACKET_ENUM+2,
-		PLAYER_MOVE_MESSAGE=ID_USER_PACKET_ENUM+3,
-		ENEMY_MOVE_MESSAGE=ID_USER_PACKET_ENUM+4,
-		ENEMY_DAMAGE_MESSAGE=ID_USER_PACKET_ENUM+5
-	};
-	void enemyMoveMessageReceived(RakNet::Packet* packet);
-	void playerMoveMessageReceived(RakNet::Packet* packet);
-	void playerJoined(RakNet::Packet* packet);
-	void playerLeft(RakNet::Packet* packet);
-	Game* game;
-	RakNet::RakPeerInterface *peer;
-	RakNet::Packet *packet;
-	RakNet::SystemAddress serverAddress;
-	bool connected;
+	RakNet::RakNetGUID guid;
+	btVector3 pos;
+	int index;
 };
 
 #endif
+
