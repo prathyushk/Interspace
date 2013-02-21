@@ -21,6 +21,7 @@ public:
 	void setTarget(Client* client);
 	void update(void);
 	void setWalkDirection(const btVector3& dir);
+	int getHealth();
 private:
 	int maxHealth, health, damage, fov, index;
 	btVector3 spawn;

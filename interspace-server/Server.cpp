@@ -170,10 +170,19 @@ void Server::enemyDamageReceived(RakNet::Packet* packet)
 {
 	RakNet::BitStream bsIn(packet->data, packet->length, false);
 	bsIn.IgnoreBytes(sizeof(RakNet::MessageID));
-	int index, damage;
+	int index, playerIndex, damage;
 	bsIn.Read(index);
+	bsIn.Read(playerIndex);
 	bsIn.Read(damage);
+	int health = enemies->at(index)->getHealth() - damage;
 	enemies->at(index)->takeDamage(damage);
+	bsIn.Reset();
+	RakNet::BitStream bsOut;
+	bsOut.Write((RakNet::MessageID)ENEMY_DAMAGE_MESSAGE);
+	bsOut.Write(index);
+	bsOut.Write(playerIndex);
+	bsOut.Write(health);
+	peer->Send(&bsOut,HIGH_PRIORITY,RELIABLE_ORDERED,0,RakNet::UNASSIGNED_RAKNET_GUID,true);
 }
 
 void Server::addEnemies(int num)
