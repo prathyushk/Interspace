@@ -34,6 +34,11 @@ int Enemy::getDamage()
   return damage;
 }
 
+int Enemy::getHealth()
+{
+  return health;
+}
+
 void Enemy::takeDamage(int damage)
 {
 	health -= damage;
