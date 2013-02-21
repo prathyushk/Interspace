@@ -7,7 +7,7 @@
 #include <cmath>
 
 Player::Player(Ogre::Camera* cam, Ogre::SceneNode* node, std::string name, Ogre::Vector3 pos, btConvexShape* shape)
-	:Person(cam,node,name,pos,shape), exp(0), statpoints(0), level(0)
+	:Person(cam,node,name,pos,shape), exp(0), credits(0), level(0)
 {
 	statSet = new StatSet();
 	health = statSet->getMaxHealth();
@@ -42,7 +42,7 @@ void Player::addExp(int toAdd)
 	exp += toAdd;
 	level = Player::calculateLevel(exp);
 	if(prev < level)
-		statpoints++;
+		credits++;
 }
 
 int Player::calculateLevel(int xp)

@@ -26,7 +26,7 @@ public:
 	static int calculateLevel(int xp);
 	static int calculateExp(int lev);
 private:
-	int level, exp, statpoints;
+	int level, exp, credits;
 	std::string charClass;
 	StatSet* statSet;
 };
