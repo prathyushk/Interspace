@@ -35,6 +35,7 @@ private:
 	void playerLeft(RakNet::Packet* packet);
 	void chatMessageRecieved(RakNet::Packet* packet);
 	void playerDamageRecieved(RakNet::Packet* packet);
+	void enemyDamageRecieved(RakNet::Packet* packet);
 	Interspace* game;
 	RakNet::RakPeerInterface *peer;
 	RakNet::Packet *packet;

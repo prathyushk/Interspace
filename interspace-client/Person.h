@@ -24,7 +24,11 @@ public:
 	void changeName(std::string newName);
 	std::string getName();
 	Ogre::MovableText* getLabel(void);
+	int getHealth();
+	void setHealth(int inHealth);
 protected:
+	Ogre::Vector3 spawnpoint;
+	int health;
 	std::string myName;
 	btKinematicCharacterController* control;
 	Ogre::MovableText* label;

@@ -101,6 +101,12 @@ void Hud::update(Player* player)
 	healthBar->setProgress(player->getHealth()/player->getStatSet()->getMaxHealth());
 	mWinMgr->getWindow("/HUDStats/Playername")->setText("Name: " + player->getName());
 	mWinMgr->getWindow("/HUDStats/Class")->setText("Class: " + player->getClass());
+	mWinMgr->getWindow("/HUDStats/Level")->setText("Level: " + std::to_string((long long)player->getLevel()));
+	CEGUI::ProgressBar* expBar = static_cast<CEGUI::ProgressBar*>(mWinMgr->getWindow("/HUDStats/Experiencebar"));
+	int expForLevel = Player::calculateExp(engine->getPlayer()->getLevel());
+	int expForNext = Player::calculateExp(engine->getPlayer()->getLevel() + 1);
+	expBar->setProgress((double)(engine->getPlayer()->getExp() - expForLevel)/(double)(expForNext - expForLevel));
+	mWinMgr->getWindow("/HUDStats/Experience")->setText("Experience: " + std::to_string((long long)player->getExp()) + "/" + std::to_string((long long)expForNext));
 }
 
 bool Hud::sendChat(const CEGUI::EventArgs& args)

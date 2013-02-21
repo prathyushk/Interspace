@@ -37,6 +37,9 @@ void Client::update()
 	{
 		switch(packet->data[0])
 		{
+		case ENEMY_DAMAGE_MESSAGE:
+			enemyDamageRecieved(packet);
+			break;
 		case PLAYER_DAMAGE_MESSAGE:
 			playerDamageRecieved(packet);
 			break;
@@ -106,6 +109,22 @@ void Client::playerDamageRecieved(RakNet::Packet* packet)
 	}
 }
 
+void Client::enemyDamageRecieved(RakNet::Packet* packet)
+{
+	if(connected)
+	{
+		RakNet::BitStream bsIn(packet->data,packet->length,false);
+		bsIn.IgnoreBytes(sizeof(RakNet::MessageID));
+		int index, playerIndex, health;
+		bsIn.Read(index);
+		bsIn.Read(playerIndex);
+		bsIn.Read(health);
+		game->getEnemies()->at(index)->setHealth(health);
+		if(playerIndex == game->getIndex())
+			game->getEnemies()->at(index)->checkDeath(game->getPlayer());
+	}
+}
+
 void Client::sendMessage(std::string str)
 {
 	if(connected)
@@ -125,6 +144,7 @@ void Client::sendDamage(int index, int damage)
 		RakNet::BitStream bsOut;
 		bsOut.Write((RakNet::MessageID)ENEMY_DAMAGE_MESSAGE);
 		bsOut.Write(index);
+		bsOut.Write(game->getIndex());
 		bsOut.Write(damage);
 		peer->Send(&bsOut, IMMEDIATE_PRIORITY, RELIABLE_ORDERED, 0, serverAddress, false);
 	}

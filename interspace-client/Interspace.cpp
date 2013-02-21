@@ -17,6 +17,8 @@
 #include "BtOgreGP.h"
 #include "BtOgrePG.h"
 #include "ProjectileManager.h"
+#include "Enemy.h"
+#include "Robo.h"
 
 template<> Interspace* Ogre::Singleton<Interspace>::msSingleton = 0;
 
@@ -31,7 +33,7 @@ Interspace::Interspace(
 	:
 #endif
 	forward(false), backward(false), left(false), right(false), camEuler(new Ogre::Euler()), mGuiManager(0), player(0), client(0),
-	enemies(new std::vector<Person*>()), players(new std::vector<Person*>()), myIndex(-1)
+	enemies(new std::vector<Enemy*>()), players(new std::vector<Person*>()), myIndex(-1)
 {
 
 }
@@ -97,10 +99,8 @@ void Interspace::initScene(std::string charName)
 	l->setPosition(20,80,50);
 	player = new Player(mCamera, mSceneMgr->getSceneNode("Player"), charName, Ogre::Vector3(0,100,80), new btCapsuleShape(5,25));
 	for(int i = 0; i < 10; i++){
-		Ogre::Entity* enemyEnt = mSceneMgr->createEntity("enemyEnt_" + std::to_string(static_cast<long long>(i)), "robo.mesh");
 		Ogre::SceneNode* enemyNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("enemy_" + std::to_string(static_cast<long long>(i)));
-		enemies->push_back(new Person(enemyEnt,enemyNode,"Robo",Ogre::Vector3(0,50,-30 - (i*20)),new btCapsuleShape(5,15), 5));
-		enemies->at(enemies->size()-1)->getLabel()->setColor(Ogre::ColourValue::Red);
+		enemies->push_back(new Robo(enemyNode,i));
 	}
 }
 
@@ -136,7 +136,7 @@ void Interspace::exitMenu()
 		client->update();
 }
 
-std::vector<Person*>* Interspace::getEnemies()
+std::vector<Enemy*>* Interspace::getEnemies()
 {
 	return enemies;
 }

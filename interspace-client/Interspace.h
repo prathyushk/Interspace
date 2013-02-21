@@ -15,6 +15,7 @@ class Hud;
 #include "BtOgreExtras.h"
 #include "BtOgreGP.h"
 #include "BtOgrePG.h"
+#include "Enemy.h"
 
 class Interspace : public Game, public Ogre::Singleton<Interspace>
 {
@@ -35,7 +36,7 @@ public:
 	void setLeft(bool set);
 	void setRight(bool set);
 	Player* getPlayer();
-	std::vector<Person*>* getEnemies();
+	std::vector<Enemy*>* getEnemies();
 	std::vector<Person*>* getPlayers();
 	int getIndex();
 	void setIndex(int index);
@@ -45,7 +46,7 @@ private:
 	GuiManager* mGuiManager;
 	Ogre::Euler* camEuler;
 	Client* client;
-	std::vector<Person*>* enemies;
+	std::vector<Enemy*>* enemies;
 	std::vector<Person*>* players;
 	Player* player;
 	void update(double dt);

@@ -11,7 +11,7 @@
 
 
 Person::Person(Ogre::Entity* ent, Ogre::SceneNode* model, std::string name, Ogre::Vector3 spawn, btConvexShape* shape, float scale)
-	:myName(name)
+	:myName(name), spawnpoint(spawn)
 {
 	model->attachObject(ent);
 	model->setPosition(spawn);
@@ -24,11 +24,12 @@ Person::Person(Ogre::Entity* ent, Ogre::SceneNode* model, std::string name, Ogre
 	label = new Ogre::MovableText(name,name,"ArialBlack-8");
 	label->setTextAlignment(Ogre::MovableText::H_CENTER, Ogre::MovableText::V_ABOVE);
 	captionNode->attachObject(label);
+	health = 100;
 	
 }
 
 Person::Person(Ogre::Camera* ent, Ogre::SceneNode* model, std::string name, Ogre::Vector3 spawn, btConvexShape* shape)
-	:myName(name)
+	:myName(name), spawnpoint(spawn)
 {
 	model->attachObject(ent);
 	Ogre::Vector3 nodePos = model->getPosition();
@@ -39,12 +40,23 @@ Person::Person(Ogre::Camera* ent, Ogre::SceneNode* model, std::string name, Ogre
 	transform.setIdentity();
 	transform.setOrigin(PhysicsManager::convert(spawn));
 	control = PhysicsManager::getSingletonPtr()->addCharacterControl(transform, shape, 0.05f, model);
+	health = 100;
 }
 
 Person::~Person(void)
 {
 	delete label;
 	getNode()->setVisible(false);
+}
+
+int Person::getHealth()
+{
+	return health;
+}
+
+void Person::setHealth(int inHealth)
+{
+	health = inHealth;
 }
 
 void Person::changeName(std::string newName)
