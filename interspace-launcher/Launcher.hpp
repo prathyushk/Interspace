@@ -7,21 +7,22 @@
 #include <QString>
 #include <QStringList>
 
-class Launcher : public QObject {
-  Q_OBJECT
+class Launcher : public QObject
+{
+        Q_OBJECT
 
 public:
-  Launcher();
-  ~Launcher();
-  void launch();
+        Launcher();
+        ~Launcher();
+        void launch();
 
 private slots:
-  void processError(QProcess::ProcessError);
+        void processError(QProcess::ProcessError error);
 
 private:
-  QProcess *interspaceProcess;
-  QString interspaceExecutable;
-  QStringList interspaceArguments;
+        QProcess *interspaceProcess;
+        QString interspaceExecutable;
+        QStringList interspaceArguments;
 };
 
 #endif /* Launcher_hpp */

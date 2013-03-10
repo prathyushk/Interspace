@@ -2,29 +2,31 @@
 #define Controller_hpp
 
 #include <QObject>
+#include <QString>
 
 #include "Launcher.hpp"
 #include "Updater.hpp"
 #include "Gui.hpp"
 
-class Controller : public QObject {
-  Q_OBJECT
+class Controller : public QObject
+{
+        Q_OBJECT
 
 public:
-  Controller();
-  ~Controller();
+        Controller();
+        ~Controller();
 
-public slots:
-  void runLauncher();
-  void runUpdater();
+private slots:
+        void runLauncher();
+        void runUpdater();
 
 signals:
-  void quitApp();
+        void quitApp();
 
 private:
-  Launcher *launcher;
-  Updater *updater;
-  Gui *gui;
+        Launcher *launcher;
+        Updater *updater;
+        Gui *gui;
 };
 
 #endif /* Controller_hpp */
