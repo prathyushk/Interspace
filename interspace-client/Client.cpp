@@ -37,6 +37,9 @@ void Client::update()
 	{
 		switch(packet->data[0])
 		{
+		case ENTITY_POSITION_MESSAGE:
+			entityPositionReceived(packet);
+			break;
 		case ENEMY_DAMAGE_MESSAGE:
 			enemyDamageRecieved(packet);
 			break;
@@ -75,6 +78,19 @@ bool Client::isConnected()
 	return connected;
 }
 
+void Client::entityPositionReceived(RakNet::Packet* packet)
+{
+	if(connected)
+	{
+		RakNet::BitStream bsIn(packet->data,packet->length,false);
+		bsIn.IgnoreBytes(sizeof(RakNet::MessageID));
+		int type, index, posx,posy,posz, dirx,diry,dirz;
+		bsIn.Read(type); bsIn.Read(index); bsIn.Read(posx); bsIn.Read(posy); bsIn.Read(posz);
+		if(type == 0);
+
+	}
+}
+
 void Client::chatMessageRecieved(RakNet::Packet* packet)
 {
 	if(connected)
@@ -97,10 +113,12 @@ void Client::playerDamageRecieved(RakNet::Packet* packet)
 	{
 		RakNet::BitStream bsIn(packet->data,packet->length,false);
 		bsIn.IgnoreBytes(sizeof(RakNet::MessageID));
-		int index;
-		int damage;
-		bsIn.Read(index);
-		bsIn.Read(damage);
+		unsigned short i;
+		unsigned short d;
+		bsIn.Read(i);
+		bsIn.Read(d);
+		int index = (int) i;
+		int damage = (int) d;
 		if(index == game->getIndex())
 		{
 			game->getPlayer()->takeDamage(damage);
@@ -115,10 +133,13 @@ void Client::enemyDamageRecieved(RakNet::Packet* packet)
 	{
 		RakNet::BitStream bsIn(packet->data,packet->length,false);
 		bsIn.IgnoreBytes(sizeof(RakNet::MessageID));
-		int index, playerIndex, health;
-		bsIn.Read(index);
-		bsIn.Read(playerIndex);
-		bsIn.Read(health);
+		unsigned short i, pI, h;
+		bsIn.Read(i);
+		bsIn.Read(pI);
+		bsIn.Read(h);
+		int index = (int)i;
+		int playerIndex = (int)pI;
+		int health = (int)h;
 		game->getEnemies()->at(index)->setHealth(health);
 		if(playerIndex == game->getIndex())
 			game->getEnemies()->at(index)->checkDeath(game->getPlayer());
@@ -143,9 +164,9 @@ void Client::sendDamage(int index, int damage)
 	{
 		RakNet::BitStream bsOut;
 		bsOut.Write((RakNet::MessageID)ENEMY_DAMAGE_MESSAGE);
-		bsOut.Write(index);
-		bsOut.Write(game->getIndex());
-		bsOut.Write(damage);
+		bsOut.Write((unsigned short)index);
+		bsOut.Write((unsigned short)game->getIndex());
+		bsOut.Write((unsigned short)damage);
 		peer->Send(&bsOut, IMMEDIATE_PRIORITY, RELIABLE_ORDERED, 0, serverAddress, false);
 	}
 }
@@ -156,15 +177,12 @@ void Client::enemyMoveMessageReceived(RakNet::Packet* packet)
 	{
 		RakNet::BitStream bsIn(packet->data,packet->length,false);
 		bsIn.IgnoreBytes(sizeof(RakNet::MessageID));
-		int index;
+		unsigned short i;
 		float posx, posy, posz, dirx, diry, dirz;
-		bsIn.Read(index);
-		bsIn.Read(posx);
-		bsIn.Read(posy);
-		bsIn.Read(posz);
-		bsIn.Read(dirx);
-		bsIn.Read(diry);
-		bsIn.Read(dirz);
+		bsIn.Read(i);
+		bsIn.ReadVector(posx, posy, posz);
+		bsIn.ReadVector(dirx,diry,dirz);
+		int index = (int)i;
 		game->getEnemies()->at(index)->setPosition(Ogre::Vector3(posx,posy,posz));
 		Ogre::Vector3 vec(dirx,diry,dirz);
 		Ogre::Euler euler;
@@ -179,17 +197,14 @@ void Client::playerMoveMessageReceived(RakNet::Packet* packet)
 	{
 		RakNet::BitStream bsIn(packet->data,packet->length,false);
 		bsIn.IgnoreBytes(sizeof(RakNet::MessageID));
-		int index;
-		int posx, posy, posz, dirx, diry, dirz;
+		unsigned short i;
+		float posx, posy, posz, dirx, diry, dirz;
 		RakNet::RakString rs;
-		bsIn.Read(index);
+		bsIn.Read(i);
 		bsIn.Read(rs);
-		bsIn.Read(posx);
-		bsIn.Read(posy);
-		bsIn.Read(posz);
-		bsIn.Read(dirx);
-		bsIn.Read(diry);
-		bsIn.Read(dirz);
+		bsIn.ReadVector(posx,posy,posz);
+		bsIn.ReadVector(dirx,diry,dirz);
+		int index = (int)i;
 		game->getPlayers()->at(index)->setPosition(Ogre::Vector3(posx,posy,posz));
 		if(index != game->getIndex())
 			game->getPlayers()->at(index)->changeName(rs.C_String());
@@ -204,8 +219,9 @@ void Client::playerJoined(RakNet::Packet* packet)
 	serverAddress = packet->systemAddress;
 	RakNet::BitStream bsIn(packet->data, packet->length,false);
 	bsIn.IgnoreBytes(sizeof(RakNet::MessageID));
-	int index;
-	bsIn.Read(index);
+	unsigned short i;
+	bsIn.Read(i);
+	int index = (int)i;
 	if(game->getIndex() == -1){
 		game->setIndex(index);
 		for(int i = 0; i < game->getIndex() + 1; i++){
@@ -230,8 +246,9 @@ void Client::playerLeft(RakNet::Packet* packet)
 	{
 		RakNet::BitStream bsIn(packet->data,packet->length,false);
 		bsIn.IgnoreBytes(sizeof(RakNet::MessageID));
-		int vecx;
-		bsIn.Read(vecx);
+		unsigned short vx;
+		bsIn.Read(vx);
+		int vecx = (int)vx;
 		delete game->getPlayers()->at(vecx);
 		game->getPlayers()->erase(game->getPlayers()->begin() + vecx);
 		if(vecx < game->getIndex())
@@ -243,13 +260,9 @@ void Client::sendPosition(const Ogre::Vector3 vec, const Ogre::Vector3 dir)
 {
 	RakNet::BitStream bsOut;
 	bsOut.Write((RakNet::MessageID)PLAYER_MOVE_MESSAGE);
-	bsOut.Write(game->getIndex());
+	bsOut.Write((unsigned short)game->getIndex());
 	bsOut.Write(game->getPlayer()->getName().c_str());
-	bsOut.Write((int)vec.x);
-	bsOut.Write((int)vec.y);
-	bsOut.Write((int)vec.z);
-	bsOut.Write((int)dir.x);
-	bsOut.Write((int)dir.y);
-	bsOut.Write((int)dir.z);
+	bsOut.WriteVector((float)vec.x,(float)vec.y,(float)vec.z);
+	bsOut.WriteVector((float)dir.x,(float)dir.y,(float)dir.z);
 	peer->Send(&bsOut,IMMEDIATE_PRIORITY,UNRELIABLE,0,serverAddress,false);
 }

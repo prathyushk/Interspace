@@ -27,8 +27,10 @@ private:
 		ENEMY_MOVE_MESSAGE=ID_USER_PACKET_ENUM+4,
 		ENEMY_DAMAGE_MESSAGE=ID_USER_PACKET_ENUM+5,
 		CHAT_MESSAGE=ID_USER_PACKET_ENUM+6,
-		PLAYER_DAMAGE_MESSAGE=ID_USER_PACKET_ENUM+7
+		PLAYER_DAMAGE_MESSAGE=ID_USER_PACKET_ENUM+7,
+		ENTITY_POSITION_MESSAGE=ID_USER_PACKET_ENUM+8
 	};
+	void entityPositionReceived(RakNet::Packet* packet);
 	void enemyMoveMessageReceived(RakNet::Packet* packet);
 	void playerMoveMessageReceived(RakNet::Packet* packet);
 	void playerJoined(RakNet::Packet* packet);
