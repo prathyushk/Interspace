@@ -22,6 +22,7 @@ public:
 	void update(void);
 	void setWalkDirection(const btVector3& dir);
 	int getHealth();
+	btVector3 getWalkDirection(void);
 private:
 	int maxHealth, health, damage, fov, index;
 	btVector3 spawn;
