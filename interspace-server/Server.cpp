@@ -53,33 +53,37 @@ int Server::enemiesCalculate()
 		for(int i = 0; i < enemies->size(); i++)
 		{
 			int rand = 0 + (std::rand() % (int)(7 - 0 + 1));
+			btVector3* dir;
 			switch(rand)
 			{
 			case 0:
-				enemies->at(i)->setWalkDirection(btVector3(0.25f,0,0));
+			        
+				dir = new btVector3(0.25f,0,0);
 				break;
 			case 1:
-				enemies->at(i)->setWalkDirection(btVector3(-0.25f,0,0));
+				dir = new btVector3(-0.25f,0,0);
 				break;
 			case 2:
-				enemies->at(i)->setWalkDirection(btVector3(0,0,0.25f));
+				dir = new btVector3(0,0,0.25f);
 				break;
 			case 3:
-				enemies->at(i)->setWalkDirection(btVector3(0,0,-0.25f));
+				dir = new btVector3(0,0,-0.25f);
 				break;
 			case 4:
-				enemies->at(i)->setWalkDirection(btVector3(0.25f,0,0.25f));
+			        dir = new btVector3(0.25f,0,0.25f);
 				break;
 			case 5:
-				enemies->at(i)->setWalkDirection(btVector3(-0.25f,0,0.25f));
+				dir = new btVector3(-0.25f,0,0.25f);
 				break;
 			case 6:
-				enemies->at(i)->setWalkDirection(btVector3(-0.25f,0,-0.25f));
+			        dir = new btVector3(-0.25f,0,-0.25f);
 				break;
 			case 7:
-				enemies->at(i)->setWalkDirection(btVector3(0.25f,0,-0.25f));
+			        dir = new btVector3(0.25f,0,-0.25f);
 				break;
 			}
+			enemies->at(i)->setWalkDirection(*dir);
+			sendEnemyWalkDirection(i, dir->x(), dir->y(), dir->z());
 			
 		}
 		boost::this_thread::sleep(boost::posix_time::milliseconds(5000));
@@ -170,18 +174,21 @@ void Server::enemyDamageReceived(RakNet::Packet* packet)
 {
 	RakNet::BitStream bsIn(packet->data, packet->length, false);
 	bsIn.IgnoreBytes(sizeof(RakNet::MessageID));
-	int index, playerIndex, damage;
-	bsIn.Read(index);
-	bsIn.Read(playerIndex);
-	bsIn.Read(damage);
+	unsigned short i, pI, d;
+	bsIn.Read(i);
+	bsIn.Read(pI);
+	bsIn.Read(d);
+	int index = (int)i;
+	int playerIndex = (int)pI;
+	int damage = (int)d;
 	int health = enemies->at(index)->getHealth() - damage;
 	enemies->at(index)->takeDamage(damage);
 	bsIn.Reset();
 	RakNet::BitStream bsOut;
 	bsOut.Write((RakNet::MessageID)ENEMY_DAMAGE_MESSAGE);
-	bsOut.Write(index);
-	bsOut.Write(playerIndex);
-	bsOut.Write(health);
+	bsOut.Write(i);
+	bsOut.Write(pI);
+	bsOut.Write((unsigned short)health);
 	peer->Send(&bsOut,HIGH_PRIORITY,RELIABLE_ORDERED,0,RakNet::UNASSIGNED_RAKNET_GUID,true);
 }
 
@@ -203,13 +210,19 @@ void Server::start()
 	boost::thread thr1(boost::bind(&Server::enemiesCalculate, this));
 	boost::thread thr2(boost::bind(&Server::listenForMessages, this));
 	boost::thread thr3(boost::bind(&Server::enemiesTarget, this));
+	int count = 0;
 	while (1)
 	{
 		boost::mutex::scoped_lock lock(enemiesMutex);
 		phys->update(1/1000.f * 3);
 		for(int i = 0; i < enemies->size(); i++)
 			enemies->at(i)->update();
-		sendEnemyPositions();
+		if(count >=200){
+		  sendEnemyPositions();
+		  sendEnemyDirections();
+		  count = 0;
+		}
+		count++;
 		boost::this_thread::sleep(boost::posix_time::milliseconds(1));
 	}
 }
@@ -219,27 +232,59 @@ void Server::sendEnemyPositions()
 	for(int i = 0; i < enemies->size(); i++)
 	{
 		RakNet::BitStream bsOut;
-		bsOut.Write((RakNet::MessageID) ENEMY_MOVE_MESSAGE);
-		bsOut.Write(i);
+		bsOut.Write((RakNet::MessageID) ENEMY_POSITION_MESSAGE);
+		bsOut.Write((unsigned short)i);
 		btVector3 pos = enemies->at(i)->getPosition();
-		btVector3 dir = enemies->at(i)->getDirection();
-		bsOut.Write((float)pos.x());
-		bsOut.Write((float)pos.y());
-		bsOut.Write((float)pos.z());
-		bsOut.Write((float)dir.x());
-		bsOut.Write((float)dir.y());
-		bsOut.Write((float)dir.z());
+		bsOut.WriteVector((float)pos.x(), (float)pos.y(), (float)pos.z());
 		peer->Send(&bsOut,IMMEDIATE_PRIORITY,UNRELIABLE,0,RakNet::UNASSIGNED_RAKNET_GUID,true);
 		bsOut.Reset();
 	}
+}
+
+void Server::sendEnemyDirections()
+{
+  for(int i = 0; i < enemies->size(); i++)
+    {
+     
+      if(enemies->at(i)->getTarget() == NULL)
+	{
+	  btVector3 dir = enemies->at(i)->getDirection();
+	  sendEnemyDirection(i, (float)dir.x(), (float)dir.y(), (float)dir.z());
+	}
+      else
+	{
+	  btVector3 dir = enemies->at(i)->getWalkDirection();
+	  sendEnemyWalkDirection(i, (float)dir.x(), (float)dir.y(),(float)dir.z());
+	}
+    }
+}
+
+void Server::sendEnemyDirection(int enemyIndex, float x, float y, float z)
+{
+  RakNet::BitStream bsOut;
+  bsOut.Write((RakNet::MessageID) ENEMY_DIRECTION_MESSAGE);
+  bsOut.Write((unsigned short)enemyIndex);
+  bsOut.WriteVector(x,y,z);
+  peer->Send(&bsOut, IMMEDIATE_PRIORITY, UNRELIABLE, 0,RakNet::UNASSIGNED_RAKNET_GUID,true);
+  bsOut.Reset();
+}
+
+void Server::sendEnemyWalkDirection(int index, float x, float y, float z)
+{
+  RakNet::BitStream bsOut;
+  bsOut.Write((RakNet::MessageID) ENEMY_WALK_DIRECTION_MESSAGE);
+  bsOut.Write((unsigned short)index);
+  bsOut.WriteVector(x,y,z);
+  peer->Send(&bsOut, IMMEDIATE_PRIORITY, UNRELIABLE, 0,RakNet::UNASSIGNED_RAKNET_GUID,true);
+  bsOut.Reset();
 }
 
 void Server::sendPlayerDamage(int playerIndex, int damage)
 {
   RakNet::BitStream bsOut;
   bsOut.Write((RakNet::MessageID) PLAYER_DAMAGE_MESSAGE);
-  bsOut.Write((int)playerIndex);
-  bsOut.Write((int)damage);
+  bsOut.Write((unsigned short)playerIndex);
+  bsOut.Write((unsigned short)damage);
   peer->Send(&bsOut,HIGH_PRIORITY,RELIABLE_ORDERED,0,getClientAt(playerIndex)->getGuid(),false);
   bsOut.Reset();
 }
@@ -248,30 +293,23 @@ void Server::playerMoveMessageReceived(RakNet::Packet* pack)
 {
 	RakNet::BitStream bsIn(pack->data,pack->length,false);
 	bsIn.IgnoreBytes(sizeof(RakNet::MessageID));
-	int index;
-	int posx, posy, posz, dirx, diry, dirz;
+	unsigned short i;
+	float posx, posy, posz, dirx, diry, dirz;
 	RakNet::RakString str;
-	bsIn.Read(index);
+	bsIn.Read(i);
 	bsIn.Read(str);
-	bsIn.Read(posx);
-	bsIn.Read(posy);
-	bsIn.Read(posz);
-	bsIn.Read(dirx);
-	bsIn.Read(diry);
-	bsIn.Read(dirz);
+	bsIn.ReadVector(posx,posy,posz);
+	bsIn.ReadVector(dirx,diry,dirz);
+	int index = (int)i;
 	Client* movedPlayer = getClientAt(index);
 	if (movedPlayer != NULL) {
 	  movedPlayer->setPos(btVector3(static_cast<btScalar>(posx), static_cast<btScalar>(posy), static_cast<btScalar>(posz)));
 	  RakNet::BitStream bsOut;
 	  bsOut.Write((RakNet::MessageID) PLAYER_MOVE_MESSAGE);
-	  bsOut.Write(index);
+	  bsOut.Write(i);
 	  bsOut.Write(str);
-	  bsOut.Write(posx);
-	  bsOut.Write(posy);
-	  bsOut.Write(posz);
-	  bsOut.Write(dirx);
-	  bsOut.Write(diry);
-	  bsOut.Write(dirz);
+	  bsOut.WriteVector(posx,posy,posz);
+	  bsOut.WriteVector(dirx,diry,dirz);
 	  peer->Send(&bsOut,IMMEDIATE_PRIORITY,UNRELIABLE,0, RakNet::UNASSIGNED_RAKNET_GUID,true);
 	  bsOut.Reset();
 	}
@@ -282,7 +320,7 @@ void Server::newConnection(RakNet::Packet* pack)
   clients->push_back(new Client(pack->guid, clients->size()));
   RakNet::BitStream bsOut;
   bsOut.Write((RakNet::MessageID)PLAYER_JOINED_MESSAGE);
-  bsOut.Write((int)(clients->size() - 1));
+  bsOut.Write((unsigned short)(clients->size() - 1));
   peer->Send(&bsOut,HIGH_PRIORITY,RELIABLE_ORDERED,0, RakNet::UNASSIGNED_RAKNET_GUID,true);
    bsOut.Reset();
 }
@@ -314,7 +352,7 @@ void Server::clientDisconnected(RakNet::Packet* pack)
 	  if(clients->size() > 0){
 			RakNet::BitStream bsOut;
 			bsOut.Write((RakNet::MessageID) PLAYER_LEFT_MESSAGE);
-			bsOut.Write(discIndex);
+			bsOut.Write((unsigned short)discIndex);
 			peer->Send(&bsOut,HIGH_PRIORITY,RELIABLE_ORDERED,0, RakNet::UNASSIGNED_RAKNET_GUID,true);
 			bsOut.Reset();
 		}

@@ -24,6 +24,11 @@ btVector3 Enemy::getDirection()
 	return direction;
 }
 
+btVector3 Enemy::getWalkDirection()
+{
+  return walkDirection;
+}
+
 btKinematicCharacterController* Enemy::getControl()
 {
 	return control;
@@ -84,7 +89,11 @@ void Enemy::update()
 			if(getPosition().distance(target->getPos()) <= 40)
 				control->setWalkDirection(btVector3(0,0,0));
 			else
-				control->setWalkDirection(btVector3(direction.x() / 250,0,direction.z()/250));
+			  {
+			    walkDirection = btVector3(direction.x() / 250,0,direction.z()/250);
+			    control->setWalkDirection(walkDirection);
+				
+			  }
 		}
 	}
 	catch(int e){}

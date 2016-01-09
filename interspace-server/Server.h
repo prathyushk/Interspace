@@ -25,12 +25,17 @@ private:
 	        PLAYER_JOINED_MESSAGE=ID_USER_PACKET_ENUM+1,
 		PLAYER_LEFT_MESSAGE=ID_USER_PACKET_ENUM+2,
 		PLAYER_MOVE_MESSAGE=ID_USER_PACKET_ENUM+3,
-		ENEMY_MOVE_MESSAGE=ID_USER_PACKET_ENUM+4,
+		ENEMY_POSITION_MESSAGE=ID_USER_PACKET_ENUM+4,
 		ENEMY_DAMAGE_MESSAGE=ID_USER_PACKET_ENUM+5,
 		CHAT_MESSAGE=ID_USER_PACKET_ENUM+6,
-		PLAYER_DAMAGE_MESSAGE=ID_USER_PACKET_ENUM+7
+		PLAYER_DAMAGE_MESSAGE=ID_USER_PACKET_ENUM+7,
+		ENEMY_WALK_DIRECTION_MESSAGE=ID_USER_PACKET_ENUM+8,
+		ENEMY_DIRECTION_MESSAGE=ID_USER_PACKET_ENUM+9
 	};
 	boost::mutex enemiesMutex;
+	void sendEnemyWalkDirection(int enemyIndex, float x, float y, float z);
+	void sendEnemyDirection(int enemyIndex, float x, float y, float z);
+	void sendEnemyDirections(void);
 	void sendEnemyPositions(void);
 	void sendPlayerDamage(int playerIndex, int damage);
 	int enemiesTarget(void);
